@@ -1,0 +1,25 @@
+name: Setup
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2.2
+
+    - name: Switch Xcode version
+      if: ${{ runner.os == 'macOS' }}
+      run: |
+        sudo xcode-select --switch /Applications/Xcode.app
+        xcodebuild -version
+      shell: bash
+
+    - name: Check Command Line Tools version
+      if: ${{ runner.os == 'macOS' }}
+      run: pkgutil --pkg-info=com.apple.pkg.CLTools_Executables
+      shell: bash
+
+    - name: Install dependencies for fastlane
+      run: bundle install
+      shell: bash

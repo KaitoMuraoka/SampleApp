@@ -1,0 +1,25 @@
+name: Unit Test
+
+on:
+  pull_request:
+    branches:
+      - "**" # すべてのPRに対して実行
+
+jobs:
+  unit_test:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - uses: maxim-lobanov/setup-xcode@v1.6.0
+        with:
+            xcode-version: latest-stable
+
+      - name: Test
+        run: xcodebuild test -project SampleApp.xcodeproj/ -scheme SampleApp -resultBundlePath TestResults -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 16"
+            
+      - uses: kishikawakatsumi/xcresulttool@v1
+        with:
+          path: TestResults.xcresult
+          if: success() || failure()
